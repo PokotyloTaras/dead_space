@@ -1,5 +1,6 @@
-require('dotenv').config();
-const pg = require('pg');
+import dotenv from 'dotenv';
+dotenv.config();
+import pg from 'pg';
 const { Pool } = pg;
 
 const pool = new Pool({
@@ -8,4 +9,4 @@ const pool = new Pool({
 
 //Add table creation
 
-module.exports = pool;
+export default pool;

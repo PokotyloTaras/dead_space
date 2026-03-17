@@ -1,11 +1,11 @@
-var express = require('express');
-var router = express.Router();
-const db = require('../db/connector');
+import express from 'express';
+const router = express.Router();
+import db from '../db/connector.js';
 
 router.get('/', async function(req, res, next) {
-  const students = await db.query('SELECT * FROM students');
+  const students = await db.query('SELECT * FROM users');
 
   res.render('index', { students: students.rows || [] });
 });
 
-module.exports = router;
+export default router;
