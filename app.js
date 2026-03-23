@@ -14,6 +14,7 @@ import slonikiRouter from './routes/sloniki.js'
 import dhdRouter from './routes/dhd.js'
 import catsRouter from './routes/cats.js'
 import streetFoodRouter from './routes/street_food.js'
+import presidentRouter from './routes/president.js'
 
 import { fileURLToPath } from 'url';
 
@@ -41,7 +42,10 @@ app.use('/cars', carsRouter);
 app.use('/dhd', dhdRouter)
 app.use('/cats', catsRouter)
 app.use('/street_food', streetFoodRouter)
+app.use('/president', presidentRouter)
+ 
 // catch 404 and forward to error handler
+
 app.use(function (req, res, next) {
   next(createError(404));
 });
