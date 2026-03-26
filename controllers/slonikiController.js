@@ -73,3 +73,26 @@ export async function updateSlonik(currentUsername, password, updateData) {
   const updateRes = await db.query(query, values);
   return updateRes.rows[0];
 }
+
+export function checkPassword(password) {
+const passwordInput = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*]).*$/;
+  if (password.length < 8) {
+    throw new Error('Password need to have 8 or more symbols')
+  } else if (!passwordInput.test(password)) {
+    throw new Error("The password must contain at least one uppercase letter, one lowercase letter, a number and a special character.");
+  }
+}
+
+export function checkAge(age) {
+  if (age < 0) {
+    throw new Error ("The age cannot be negative")
+  }
+}
+
+  export function checkUsername(username) {
+  const hasLetter = /[a-zA-Z]/.test(username); 
+
+    if (!hasLetter) {
+      throw new Error("The username must contain at least one letter");
+    }
+  }

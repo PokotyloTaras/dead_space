@@ -4,21 +4,31 @@
         GO BACK
     </a>
 </button>
+
 <form method="POST" action="{{action}}">
     <fieldset>
         <label>
             Username
             <input name="username" placeholder="Enter Username" required />
+            {{#if ErrorUsername}}
+                <p style="color:#ff0000">{{ErrorUsername}}</p>
+             {{/if}}
         </label>
         
         <label>
             Password
             <input type="password" name="password" placeholder="Enter Password" required />
+            {{#if ErrorPassword}}
+                <p style="color:#ff0000">{{ErrorPassword}}</p>
+            {{/if}}
         </label>
         
         <label>
             Age
             <input type="number" name="age" placeholder="Enter Age" required />
+            {{#if ErrorAge}}
+                <p style="color:#ff0000">{{ErrorAge}}</p>
+            {{/if}}
         </label>
         
         <label>
