@@ -5,17 +5,162 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/stylesheets/street_food.css">
-    <title>Street Food</title>
+    <title>{{title}}</title>
 </head>
 
 <body>
-    <button class="btn-primary">
-        <a style="color:#ffffff" href="/">
-            GO BACK
-        </a>
-    </button>
     <div class="page">
         <div class="container">
+
+            {{#if isForm}}
+            <div class="form-container">
+                <div style="margin-bottom: 20px;">
+                    <a href="/street_food" class="btn btn-primary">GO BACK</a>
+                </div>
+
+                <div class="form-card">
+                    <div class="form-header">
+                        <p class="eyebrow">Dashboard</p>
+                        <h1>{{pageTitle}}</h1>
+                        <p class="subtitle">Fill in the fields below</p>
+                    </div>
+
+                    {{#if formError}}
+                    <p class="field-error" style="margin-bottom: 16px;">{{formError}}</p>
+                    {{/if}}
+
+                    <form action="{{action}}" method="POST" class="food-form" novalidate>
+                        <div class="form-grid">
+                            <label>
+                                Food name
+                                <input type="text" name="food_name" value="{{item.food_name}}" required>
+                            </label>
+
+                            <label class="country-field">
+                                Country
+                                <div class="country-select">
+                                    <input type="text" id="countryInput" name="country" value="{{item.country}}"
+                                        autocomplete="off" required placeholder="Start typing country...">
+                                    <div class="country-dropdown" id="countryDropdown"></div>
+                                </div>
+                            </label>
+
+                            <label>
+                                Spicy level
+                                <input type="number" name="spicy_level" min="0" max="10" value="{{item.spicy_level}}">
+                            </label>
+
+                            <label>
+                                Price
+                                <input type="number" name="price" min="0" step="0.01" value="{{item.price}}">
+                            </label>
+
+                            <label>
+                                Rating
+                                <input type="number" name="rating" min="1" max="10" value="{{item.rating}}">
+                            </label>
+                        </div>
+
+                        <div class="form-actions">
+                            <a href="/street_food" class="btn btn-ghost">Cancel</a>
+                            <button type="submit" class="btn btn-primary">{{buttonText}}</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <script>
+                (() => {
+                    const countries = {{{ countries }}};
+                const countryInput = document.getElementById('countryInput');
+                const countryDropdown = document.getElementById('countryDropdown');
+
+                if (!countryInput || !countryDropdown || !Array.isArray(countries)) {
+                    return;
+                }
+
+                function escapeHtml(value) {
+                    return String(value)
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#39;');
+                }
+
+                function renderDropdown(list) {
+                    if (!list.length) {
+                        countryDropdown.innerHTML = '<div class="country-option empty">No matches found</div>';
+                        countryDropdown.classList.add('show');
+                        return;
+                    }
+
+                    countryDropdown.innerHTML = list
+                        .slice(0, 8)
+                        .map((country) => {
+                            return `<button type="button" class="country-option" data-value="${escapeHtml(country)}">${escapeHtml(country)}</button>`;
+                        })
+                        .join('');
+
+                    countryDropdown.classList.add('show');
+                }
+
+                function filterCountries(query) {
+                    const normalized = query.trim().toLowerCase();
+
+                    if (!normalized) {
+                        return countries.slice(0, 8);
+                    }
+
+                    return countries.filter((country) =>
+                        country.toLowerCase().includes(normalized)
+                    );
+                }
+
+                function openDropdown() {
+                    renderDropdown(filterCountries(countryInput.value));
+                }
+
+                function closeDropdown() {
+                    countryDropdown.classList.remove('show');
+                }
+
+                countryInput.addEventListener('focus', openDropdown);
+
+                countryInput.addEventListener('input', () => {
+                    renderDropdown(filterCountries(countryInput.value));
+                });
+
+                countryDropdown.addEventListener('click', (event) => {
+                    const option = event.target.closest('.country-option[data-value]');
+                    if (!option) return;
+
+                    countryInput.value = option.dataset.value;
+                    closeDropdown();
+                    countryInput.focus();
+                });
+
+                document.addEventListener('click', (event) => {
+                    const insideCountrySelect = event.target.closest('.country-select');
+                    if (!insideCountrySelect) {
+                        closeDropdown();
+                    }
+                });
+
+                countryInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Escape') {
+                        closeDropdown();
+                    }
+                });
+                }) ();
+            </script>
+
+            {{else}}
+
+            <div style="margin-bottom: 20px;">
+                <a href="/" class="btn btn-primary">GO BACK</a>
+            </div>
+
             <div class="topbar">
                 <div>
                     <p class="eyebrow">Dashboard</p>
@@ -42,7 +187,7 @@
                     </thead>
 
                     <tbody>
-                        {{#if food}}
+                        {{#if food.length}}
                         {{#each food}}
                         <tr>
                             <td class="muted">{{id}}</td>
@@ -74,70 +219,79 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
 
-    <div class="modal-backdrop" id="deleteModal">
-        <div class="modal-card">
-            <div class="modal-icon">!</div>
+            <div class="modal-backdrop" id="deleteModal">
+                <div class="modal-card">
+                    <div class="modal-icon">!</div>
 
-            <h2 class="modal-title">Delete item?</h2>
-            <p class="modal-text">
-                You are about to delete <strong id="deleteFoodName">this item</strong>. This action cannot be undone.
-            </p>
+                    <h2 class="modal-title">Delete item?</h2>
+                    <p class="modal-text">
+                        You are about to delete <strong id="deleteFoodName">this item</strong>. This action cannot be
+                        undone.
+                    </p>
 
-            <div class="modal-actions">
-                <button type="button" class="btn btn-ghost" id="cancelDelete">Cancel</button>
-                <button type="button" class="btn btn-delete-solid" id="confirmDelete">Yes, delete</button>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-ghost" id="cancelDelete">Cancel</button>
+                        <button type="button" class="btn btn-delete-solid" id="confirmDelete">Yes, delete</button>
+                    </div>
+                </div>
             </div>
+
+            <script>
+                (() => {
+                    const modal = document.getElementById('deleteModal');
+                    const deleteFoodName = document.getElementById('deleteFoodName');
+                    const confirmDeleteBtn = document.getElementById('confirmDelete');
+                    const cancelDeleteBtn = document.getElementById('cancelDelete');
+                    const openDeleteButtons = document.querySelectorAll('.open-delete-modal');
+
+                    if (!modal || !deleteFoodName || !confirmDeleteBtn || !cancelDeleteBtn || !openDeleteButtons.length) {
+                        return;
+                    }
+
+                    let currentForm = null;
+
+                    openDeleteButtons.forEach((button) => {
+                        button.addEventListener('click', function () {
+                            currentForm = this.closest('.delete-form');
+                            const foodName = currentForm?.dataset.foodName || 'this item';
+
+                            deleteFoodName.textContent = foodName;
+                            modal.classList.add('is-open');
+                        });
+                    });
+
+                    cancelDeleteBtn.addEventListener('click', function () {
+                        modal.classList.remove('is-open');
+                        currentForm = null;
+                    });
+
+                    confirmDeleteBtn.addEventListener('click', function () {
+                        if (currentForm) {
+                            currentForm.submit();
+                        }
+                    });
+
+                    modal.addEventListener('click', function (event) {
+                        if (event.target === modal) {
+                            modal.classList.remove('is-open');
+                            currentForm = null;
+                        }
+                    });
+
+                    document.addEventListener('keydown', function (event) {
+                        if (event.key === 'Escape') {
+                            modal.classList.remove('is-open');
+                            currentForm = null;
+                        }
+                    });
+                })();
+            </script>
+
+            {{/if}}
+
         </div>
     </div>
-
-    <script>
-        const modal = document.getElementById('deleteModal');
-        const deleteFoodName = document.getElementById('deleteFoodName');
-        const confirmDeleteBtn = document.getElementById('confirmDelete');
-        const cancelDeleteBtn = document.getElementById('cancelDelete');
-        const openDeleteButtons = document.querySelectorAll('.open-delete-modal');
-
-        let currentForm = null;
-
-        openDeleteButtons.forEach((button) => {
-            button.addEventListener('click', function () {
-                currentForm = this.closest('.delete-form');
-                const foodName = currentForm.dataset.foodName || 'this item';
-
-                deleteFoodName.textContent = foodName;
-                modal.classList.add('is-open');
-            });
-        });
-
-        cancelDeleteBtn.addEventListener('click', function () {
-            modal.classList.remove('is-open');
-            currentForm = null;
-        });
-
-        confirmDeleteBtn.addEventListener('click', function () {
-            if (currentForm) {
-                currentForm.submit();
-            }
-        });
-
-        modal.addEventListener('click', function (event) {
-            if (event.target === modal) {
-                modal.classList.remove('is-open');
-                currentForm = null;
-            }
-        });
-
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') {
-                modal.classList.remove('is-open');
-                currentForm = null;
-            }
-        });
-
-    </script>
 </body>
 
 </html>

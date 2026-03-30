@@ -1,44 +1,167 @@
-<div style="position: absolute; top: 20px; left: 20px;">
-    <a href="/" style="
-        display: inline-block;
-        padding: 10px 20px;
-        color: white; 
-        text-decoration: none; 
-        border-radius: 5px;
-        font-weight: bold;
-        font-family: sans-serif;
-        box-shadow: 0 4px 6px rgba(255, 255, 255, 0.3);
-    ">←</a>
-</div>
+<style>
 
-    
-</button>
-    <h1 style="margin-top: 150px; color:rgb(255, 255, 255)">GAMES LIST</h1>
-        <table>
-            <thead>
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Name</th>
-                <th scope="col">Mode</th>
-                <th scope="col">Cost</th>
-                <th scope="col">Created at</th>
+html, body {
+    height: 100%;
+    margin: 0;
+}
 
-            </tr>
-            </thead>
-            <tbody>
-            {{#each games}}
-                <tr>
-                    <th scope="row">{{this.id}}</th>
-                    <td>{{this.game_name}}</td>
-                    <td>{{this.game_mode}}</td>
-                    <td>{{this.cost}}</td>
-                    <td>{{this.created_at}}</td>
+body {
+    background: linear-gradient(45deg, #0000 0%, #000032 20%, #19004b 50%, #000032 80%, #0000 100%);
+}
 
-                    <td><a style="color:rgb(0, 255, 255)" href="/games/update/{{this.id}}">Edit</a></td> 
-                    <td><a style="color:rgb(255, 0, 0)" href="/games/delete/{{this.id}}">Delete</a></td>
-                </tr>
-            {{/each}}
-            </tbody>
-        </table>
-        <p><a style="color:rgb(0, 255, 0)" href="/games/create">ADD GAME</a></p>
-    </body>
+table {
+    width: 1000px;
+    margin: 50px auto;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0); 
+    backdrop-filter: blur(10px);         
+    border-radius: 15px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+table th {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 14px;
+    text-transform: uppercase;
+    font-size: 20px;
+    text-align: center;
+    letter-spacing: 1px;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+table td {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 12px 15px;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    font-size: 20px;
+}
+
+table tr:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transition: 0.3s;
+}
+
+.btn-edit, .btn-delete {
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 12px;
+    transition: 0.3s;
+}
+
+.btn-edit {
+    color: #4facfe;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 1px solid #4facfe;
+}
+
+.btn-edit:hover {
+    background: #4facfe;
+    color: #fff;
+}
+
+.btn-delete {
+    color: #ff4b2b;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 1px solid #ff4b2b;
+}
+
+.btn-delete:hover {
+    background: #ff4b2b;
+    color: #fff;
+}
+
+.btn-add {
+    display: block;
+    width: 100px;
+    margin: 20px auto;
+    margin-top: 10px;
+    padding: 10px;
+    background: #28a745;
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 8px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+    border: 1px solid aliceblue;
+}
+
+.btn-back {
+    position: absolute;
+    top: 20px; 
+    left: 20px;
+    background-color:rgba(255, 0, 0, 0); 
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 20px;
+    display:inline-block;
+    padding: 10px 20px;
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    font-weight: bold;
+    font-family: sans-serif;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.btn-list {
+    margin-left: 555px;
+    margin-top: 200px; 
+    margin-bottom: 20px; 
+    color:rgb(255, 255, 255);
+}
+
+.btn-telegram {
+    position: absolute;
+    bottom: 25px; 
+    left: 25px;
+    display:inline-block;
+    padding: 10px 10px;
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    font-weight: bold;
+    font-family: sans-serif;
+}
+
+</style>
+    <div><a href="/" class="btn-back">←</a></div> 
+        </button>
+            <h1 class="btn-list">👾GAMES LIST👾</h1>
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Mode</th>
+                            <th scope="col">Cost</th>
+                            <th  scope="col">Created at</th>
+                            <th style="width: 10px"></th>
+                            <th style="width: 10px"></th>
+                        </tr>
+                    </thead>
+                        <tbody>
+                            {{#each games}}
+                                <tr>
+                                    <th scope="row">{{this.id}}</th>
+                                    <td>{{this.game_name}}</td>
+                                    <td>{{this.game_mode}}</td>
+                                    <td>{{this.cost}}</td>
+                                    <td>{{this.created_at}}</td>
+                                    <td><a href="/games/update/{{this.id}}" class="btn-edit">Edit</a></td> 
+                                    <td><a href="/games/delete/{{this.id}}" class="btn-delete" onclick="return confirm('YOU SURE?')">Delete</a></td>
+                                </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                <div><a href="/games/create" class="btn-add">ADD</a></div>
+                <div><a href="https://t.me/aptem_oe" class="btn-telegram">T</a></div>
+            </body>

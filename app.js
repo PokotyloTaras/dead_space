@@ -11,11 +11,14 @@ import gamesRouter from './routes/games.js'
 import weaponRouter from './routes/dead_space.js'
 import carsRouter from './routes/cars.js'
 import slonikiRouter from './routes/sloniki.js'
-import gymRouter from './routes/gym.js'
+import moviesRouter from './routes/movies.js'
+import gymRouter from './routes/gym2.js'
 import heroesRouter from './routes/heroes_mlbb.js' 
 import catsRouter from './routes/cats.js' 
 import dhdRouter from './routes/dhd.js'
 import streetFoodRouter from './routes/street_food.js'
+import presidentRouter from './routes/president.js'
+import productRouter from './routes/product.js'
 
 import { fileURLToPath } from 'url';
 
@@ -35,18 +38,21 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/movies', moviesRouter);
 app.use('/students', usersRouter);
 app.use('/games', gamesRouter);
 app.use('/weapons', weaponRouter);
 app.use('/sloniki', slonikiRouter);
 app.use('/cars', carsRouter);
-app.use('/gym', gymRouter);
+app.use('/gym2', gymRouter);
 app.use('/heroes', heroesRouter); 
 app.use('/cats', catsRouter); 
 app.use('/dhd', dhdRouter);
 app.use('/street_food', streetFoodRouter);
+app.use('/product', productRouter);
 
 // catch 404 and forward to error handler
+
 app.use(function (req, res, next) {
   next(createError(404));
 });

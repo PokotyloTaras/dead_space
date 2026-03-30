@@ -15,13 +15,33 @@ function isValidCountry(country) {
   return countries.some(item => item.toLowerCase() === normalized);
 }
 
+function buildFormView({
+  title,
+  pageTitle,
+  action,
+  buttonText,
+  item = {},
+  formError = ''
+}) {
+  return {
+    title,
+    isForm: true,
+    pageTitle,
+    action,
+    buttonText,
+    item,
+    countries: JSON.stringify(countries),
+    formError
+  };
+}
+
 router.get('/', async function (req, res, next) {
   try {
     const food = await db.query('SELECT * FROM street_food ORDER BY id ASC');
 
     res.render('street_food', {
       title: 'Street Food',
-      mode: 'list',
+      isForm: false,
       food: food.rows || []
     });
   } catch (err) {
@@ -30,15 +50,16 @@ router.get('/', async function (req, res, next) {
 });
 
 router.get('/new', function (req, res) {
-  res.render('street_food', {
-    title: 'Add food',
-    mode: 'form',
-    pageTitle: 'Add new food',
-    action: '/street_food/create',
-    buttonText: 'Create food',
-    item: {},
-    countries: JSON.stringify(countries)
-  });
+  res.render(
+    'street_food',
+    buildFormView({
+      title: 'Add food',
+      pageTitle: 'Add new food',
+      action: '/street_food/create',
+      buttonText: 'Create food',
+      item: {}
+    })
+  );
 });
 
 router.post('/create', async function (req, res, next) {
@@ -46,16 +67,17 @@ router.post('/create', async function (req, res, next) {
     const { food_name, country, spicy_level, price, rating } = req.body;
 
     if (!isValidCountry(country)) {
-      return res.status(400).render('street_food', {
-        title: 'Add food',
-        mode: 'form',
-        pageTitle: 'Add new food',
-        action: '/street_food/create',
-        buttonText: 'Create food',
-        item: req.body,
-        countries: JSON.stringify(countries),
-        formError: 'Please choose a valid country from the list.'
-      });
+      return res.status(400).render(
+        'street_food',
+        buildFormView({
+          title: 'Add food',
+          pageTitle: 'Add new food',
+          action: '/street_food/create',
+          buttonText: 'Create food',
+          item: req.body,
+          formError: 'Please choose a valid country from the list.'
+        })
+      );
     }
 
     await db.query(
@@ -64,7 +86,7 @@ router.post('/create', async function (req, res, next) {
       VALUES ($1, $2, $3, $4, $5)
       `,
       [
-        food_name,
+        food_name?.trim() || '',
         country.trim(),
         spicy_level === '' ? null : spicy_level,
         price === '' ? null : price,
@@ -94,15 +116,16 @@ router.get('/edit/:id', async function (req, res, next) {
       });
     }
 
-    res.render('street_food', {
-      title: 'Edit food',
-      mode: 'form',
-      pageTitle: 'Edit food',
-      action: `/street_food/update/${item.id}`,
-      buttonText: 'Save changes',
-      item,
-      countries: JSON.stringify(countries)
-    });
+    res.render(
+      'street_food',
+      buildFormView({
+        title: 'Edit food',
+        pageTitle: 'Edit food',
+        action: `/street_food/update/${item.id}`,
+        buttonText: 'Save changes',
+        item
+      })
+    );
   } catch (err) {
     next(err);
   }
@@ -113,19 +136,20 @@ router.post('/update/:id', async function (req, res, next) {
     const { food_name, country, spicy_level, price, rating } = req.body;
 
     if (!isValidCountry(country)) {
-      return res.status(400).render('street_food', {
-        title: 'Edit food',
-        mode: 'form',
-        pageTitle: 'Edit food',
-        action: `/street_food/update/${req.params.id}`,
-        buttonText: 'Save changes',
-        item: {
-          id: req.params.id,
-          ...req.body
-        },
-        countries: JSON.stringify(countries),
-        formError: 'Please choose a valid country from the list.'
-      });
+      return res.status(400).render(
+        'street_food',
+        buildFormView({
+          title: 'Edit food',
+          pageTitle: 'Edit food',
+          action: `/street_food/update/${req.params.id}`,
+          buttonText: 'Save changes',
+          item: {
+            id: req.params.id,
+            ...req.body
+          },
+          formError: 'Please choose a valid country from the list.'
+        })
+      );
     }
 
     await db.query(
@@ -139,7 +163,7 @@ router.post('/update/:id', async function (req, res, next) {
       WHERE id = $6
       `,
       [
-        food_name,
+        food_name?.trim() || '',
         country.trim(),
         spicy_level === '' ? null : spicy_level,
         price === '' ? null : price,

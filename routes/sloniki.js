@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 import db from '../db/connector.js';
-import { registerSlonik, deleteSlonik, updateSlonik } from '../controllers/slonikiController.js';
+import { registerSlonik, deleteSlonik, updateSlonik, checkPassword, checkAge, checkUsername, checkPlaceOfBirth } from '../controllers/slonikiController.js';
 
 router.get('/', async function(req, res, next) {
   const sloniki = await db.query('SELECT * FROM sloniki');
@@ -22,14 +22,32 @@ router.get('/create', async function(req, res, next) {
 router.post('/create', async function(req, res, next) {
 const { username, password, age, place_of_birth } = req.body;
 
-try {
+  try {
+
+    const { username, password, age, place_of_birth } = req.body;
+
+    checkUsername(username);
+    checkAge(age);
+    checkPassword(password);
+    checkPlaceOfBirth(place_of_birth);
+    
     await registerSlonik(username, password, age, place_of_birth);
     
     res.redirect('/sloniki');
   } catch (err) {
-    res.status(500).send(`!! Error registering slonik: this slonik: @${username} is already exist`);
+    const errorMessage = err.message
+    // res.status(500).send(`!! Error registering slonik: this slonik: @${username} is already exist`);
+    res.render('forms/sloniki/sloniki_form', {
+      errorUsername: errorMessage.includes("username") ? errorMessage : null,
+      errorAge: errorMessage.includes("age") ? errorMessage : null,
+      errorPassword: (errorMessage.
+        includes("Password") || errorMessage.
+        includes("password")) ? errorMessage : null,
+      errorPlaceOfBirth: errorMessage.includes("place") ? errorMessage : null,
+      username, age, place_of_birth
+    })
   }
-});
+})
 
 router.get('/delete', async function(req, res, next) {
   res.render('forms/sloniki/deleteSloniki');
