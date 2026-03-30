@@ -6,16 +6,25 @@
 </head>
 <body>
 
-<h2>Heroes</h2>
+<div style="margin-bottom: 20px;">
+  <button style="background-color: rgb(242, 130, 208); border: none; padding: 5px 10px;">
+    <a style="color:#ffffff; text-decoration: none;" href="/">GO BACK</a>
+  </button>
+
+  <button id="add-hero-btn" style="background-color: #4CAF50; color: white; border: none; padding: 7px 15px; margin-left: 10px; cursor: pointer;">
+    Add New Hero
+  </button>
+</div>
 
 <table border="1">
   <tr>
     <th>ID</th>
     <th>Name</th>
-    <th>Attribute</th>
+    <th>Primary Attribute</th>
     <th>Role</th>
     <th>Difficulty</th>
     <th>Created</th>
+    <th>Actions</th>
   </tr>
 
   {{#each heroes}}
@@ -26,10 +35,44 @@
     <td>{{role}}</td>
     <td>{{difficulty}}</td>
     <td>{{created_at_date}} {{created_at_time}}</td>
+    <td>
+      <button class="delete-hero-btn" data-id="{{id}}" style="background-color: #f44336; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+        Delete
+      </button>
+    </td>
   </tr>
   {{/each}}
 
 </table>
+
+<script>
+  const addBtn = document.getElementById('add-hero-btn');
+  if (addBtn) {
+    addBtn.addEventListener('click', function() {
+      window.location.href = '/heroes/add'; 
+    });
+  }
+
+  const deleteBtns = document.querySelectorAll('.delete-hero-btn');
+  deleteBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const heroId = this.getAttribute('data-id');
+      
+      if (confirm('Ви впевнені, що хочете видалити героя з ID: ' + heroId + '?')) {
+        fetch('/heroes/' + heroId, {
+          method: 'DELETE'
+        })
+        .then(response => {
+          if (response.ok) {
+            window.location.reload();
+          } else {
+            alert('Помилка! Не вдалося видалити героя.');
+          }
+        });
+      }
+    });
+  });
+</script>
 
 </body>
 </html>

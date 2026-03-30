@@ -1,0 +1,48 @@
+<div style="position: absolute; top: 20px; left: 20px;">
+    <a href="/games" style="
+        display: inline-block;
+        padding: 10px 20px;
+        color: white; 
+        text-decoration: none; 
+        border-radius: 5px;
+        font-weight: bold;
+        font-family: sans-serif;
+        box-shadow: 0 4px 6px rgba(255, 255, 255, 0.3);
+    ">←</a>
+</div>
+
+</button>
+<form method="POST" action="{{action}}">
+    <fieldset>
+        <div style="margin-top: 150px"></div>
+        <label>
+            <h1>Name</h1>
+            <input
+                    name="name"
+                    placeholder="Enter the name of the game"
+                    autocomplete=""
+            />
+        </label>
+        <label>
+            <h1>Mode</h1>
+            <input
+                    name="mode"
+                    placeholder="Is this game online or offline? Online/Offline/Both"
+                    autocomplete=""
+            />
+        </label>
+        <label>
+            <h1>Cost</h1>
+            <input
+                    name="cost"
+                    placeholder="How much is this game cost?"
+                    autocomplete=""
+            />
+        </label>
+    </fieldset>
+
+    <input
+            type="submit"
+            value="SAVE"
+    />
+</form>
