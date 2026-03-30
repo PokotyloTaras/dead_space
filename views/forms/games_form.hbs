@@ -1,49 +1,82 @@
-<div style="position: absolute; top: 20px; left: 20px; background-color:black; border-radius: 50px;">
-    <a href="/games" style="
-        display:inline-block;
-        padding: 10px 20px;
-        color: rgb(255, 255, 255); 
-        text-decoration: none; 
-        border-radius: 20px;
-        font-weight: bold;
-        font-family: sans-serif;
-        box-shadow: 0px 0px 15px rgba(255, 255, 255, 1);
-    ">←</a>
-</div>
+<style>
 
-</button>
-<form method="POST" action="{{action}}">
-    <fieldset>
-        <div style="margin-top: 150px"></div>
-        <label>
-            <h1>Name</h1>
-            <input
-                    name="name"
-                    placeholder="Enter the name of the game"
-                    autocomplete=""
-            />
-        </label>
-        <label>
-            <h1>Mode</h1>
-            <input
-                    name="mode"
-                    placeholder="Is this game online or offline? Online/Offline/Both"
-                    autocomplete=""
-            />
-        </label>
-        <label>
-            <h1>Cost</h1>
-            <input
-                    name="cost"
-                    placeholder="How much is this game cost?"
-                    autocomplete=""
-            />
-        </label>
-    </fieldset>
+input::placeholder {
+  color: #ffffff;
+  opacity: 1;   
+}
 
-    <input
-            style="display: block; margin: auto; width: auto; background-color:green; border-color:aliceblue" 
-            type="submit"
-            value="SAVE"
-    />
-</form>
+.btn-back {
+    position: absolute;
+    top: 20px; 
+    left: 20px;
+    background-color:rgba(255, 0, 0, 0); 
+    border-radius: 20px;
+    display:inline-block;
+    padding: 10px 20px;
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    font-weight: bold;
+    font-family: sans-serif;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.btn-save {
+    display: block;
+    width: 100px !important;   
+    margin: 20px auto;
+    background: #28a745;
+    border-color:aliceblue;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+body {
+    background: linear-gradient(45deg, #0000 0%, #000032 20%, #19004b 50%, #000032 80%, #0000 100%);
+}
+
+
+html, body {
+    height: 100%; 
+    margin: 0;
+}
+
+
+</style>
+    <div><a href="/games" class="btn-back">←</a></div> 
+            <form method="POST" action="{{action}}">
+                <fieldset>
+                    <div style="margin-top: 200px;"></div>
+                    <label>
+                        <h1>Name</h1>
+                        <input
+                                style="background-color:rgba(0, 0, 0, 0.0); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);"
+                                name="name"
+                                placeholder="Enter the name of the game"
+                                autocomplete=""
+                        />
+                    </label>
+                    <label>
+                        <h1 style="margin-top: 20px">Mode</h1>
+                        <input
+                                style="background-color:rgba(0, 0, 0, 0.0); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);"
+                                name="mode"
+                                placeholder="Online/Offline/Both"
+                                autocomplete=""
+                        />
+                    </label>
+                    <label>
+                        <h1 style="margin-top: 20px">Cost</h1>
+                        <input
+                                style="background-color:rgba(0, 0, 0, 0.0); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);"
+                                name="cost"
+                                placeholder="How much is this game cost?"
+                                autocomplete=""
+                                
+                        />
+                    </label>
+                </fieldset>
+
+                <input  class="btn-save"
+                        type="submit"
+                        value="SAVE"
+                />
+            </form>
