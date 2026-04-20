@@ -14,6 +14,36 @@ router.get('/', async function (req, res, next) {
   res.render('dead_space', { weapons: modWeapons || [] });
 });
 
+// Class 
+// -------------------------------------------------------------
+class Weapon {
+  constructor(additional_info) {
+    this.additional_info = additional_info;
+  }
+
+  async toJSON() {
+    try {
+      await db.query(
+        'UPDATE deadSpace SET additional_info = $1',
+        [this.additional_info]
+      );
+
+      const result = await db.query('SELECT * FROM deadSpace');
+
+      return result.rows;
+    } catch (error) {
+      console.error("Помилка:", error);
+      throw error;
+    }
+  }
+}
+const myWeapon = new Weapon("гаддем")
+
+myWeapon.toJSON().then(data => {
+  console.log("additional info:", data)
+})
+// -------------------------------------------------------------
+
 // Add
 // -------------------------------------------------------------
 router.get('/createGun', async function (req, res, next) {
