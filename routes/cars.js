@@ -2,14 +2,17 @@ import express from 'express';
 import db from '../db/connector.js';
 
 
-import { 
-  createCar, 
-  updateCar, 
-  deleteCar, 
-  validateCarData 
-} from '../controllers/carController.js';
-
+import { CarService, CarValidator } from '../controllers/carController.js'; 
+(async () => {
+  try {
+    await db.query('ALTER TABLE cars ADD COLUMN IF NOT EXISTS image_url TEXT;');
+    console.log("Колонку image_url успішно перевірено/додано в БД!");
+  } catch (err) {
+    console.error("Помилка бази даних при додаванні колонки:", err.message);
+  }
+})();
 const router = express.Router();
+
 
 router.get('/', async function(req, res, next) {
   console.log("Зайшли на головну сторінку!"); 
@@ -48,11 +51,8 @@ router.get('/new', (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    validateCarData(req.body);
-
-    await createCar(req.body);
-    
-    res.redirect('/'); 
+    const newCar = await CarService.createCar(req.body); 
+    res.status(201).json(newCar);
   } catch (error) {
     console.error('Помилка при створенні машини:', error.message);
 
@@ -85,11 +85,11 @@ router.post('/edit/:id', async (req, res) => {
   const carId = req.params.id;
 
   try {
+    
+    CarValidator.validate(req.body);
 
-    validateCarData(req.body);
-
-
-    await updateCar(carId, req.body);
+  
+    await CarService.updateCar(carId, req.body);
 
     res.redirect('/'); 
   } catch (error) {
@@ -102,7 +102,7 @@ router.post('/edit/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   const carId = req.params.id;
   try {
-    await deleteCar(carId);
+    await CarService.deleteCar(req.params.id);
     res.status(200).json({ message: 'Машину успішно видалено!' });
   } catch (error) {
     console.error('Помилка при видаленні:', error.message);
@@ -110,4 +110,14 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+router.get('/setup-db', async (req, res) => {
+  try {
+    
+    await db.query('ALTER TABLE cars ADD COLUMN IF NOT EXISTS image_url TEXT;');
+    res.send('Колонку image_url успішно перевірено/додано! Тепер цей маршрут можна видалити з коду.');
+  } catch (error) {
+    console.error('Помилка оновлення БД:', error);
+    res.status(500).send(`Помилка: ${error.message}`);
+  }
+});
 export default router;
