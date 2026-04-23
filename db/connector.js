@@ -154,6 +154,17 @@ createTableQueries.push(`
             ON DELETE CASCADE
     );
 `);
+createTableQueries.push(`
+    CREATE TABLE IF NOT EXISTS songs (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        artist VARCHAR(255) NOT NULL,
+        genre VARCHAR(100),
+        duration VARCHAR(50),
+        created_at TIMESTAMP DEFAULT NOW()
+    );
+`);
+ 
 
 createTableQueries.push(`CREATE TABLE IF NOT EXISTS heroes_mlbb (
     id SERIAL PRIMARY KEY,
